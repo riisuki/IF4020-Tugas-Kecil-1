@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QRadioButton,
     QVBoxLayout,
+    QHBoxLayout,
     QWidget,
     QPlainTextEdit,
     QStackedWidget
@@ -24,6 +25,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Tugas Kecil IF4020")
 
+        hbox = QHBoxLayout()
         layout = QVBoxLayout()
         
         self.label1 = QLabel("Jenis Cipher:")
@@ -31,6 +33,8 @@ class MainWindow(QMainWindow):
         self.jeniscipher.addItems(["Vigénere", "Full Vigénere", "Auto-key Vigénere", "Extended Vigénere", "Playfair", "Affine", "Hill", "Enigma"])
 
 
+        self.spasi = QCheckBox("Tambahkan spasi di cipherteks")
+        
         self.label2 = QLabel("Plainteks:")
         self.plainteks = QPlainTextEdit()
 
@@ -75,9 +79,10 @@ class MainWindow(QMainWindow):
 
         
         # Masukkan menu ganti cipher
-        layout.addWidget(self.label1)
-        layout.addWidget(self.jeniscipher)
-        layout.addWidget(self.stack)
+        #layout.addWidget(self.label1)
+        #layout.addWidget(self.jeniscipher)
+        #layout.addWidget(self.stack)
+        layout.addWidget(self.spasi)
         layout.addWidget(self.label2)
         layout.addWidget(self.plainteks)
         layout.addWidget(self.bukafile)
@@ -85,11 +90,19 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.cipherteks)
         layout.addWidget(self.bukafile2)
         layout.addWidget(self.label4)
-        layout.addWidget(self.enkripsi)
-        layout.addWidget(self.dekripsi)
+        #layout.addWidget(self.enkripsi)
+        #layout.addWidget(self.dekripsi)
 
         widget = QWidget()
-        widget.setLayout(layout)
+        hbox.addLayout(layout)
+        hbox.addWidget(self.stack)
+        layoutall = QVBoxLayout()
+        layoutall.addWidget(self.label1)
+        layoutall.addWidget(self.jeniscipher)
+        layoutall.addLayout(hbox)
+        layoutall.addWidget(self.enkripsi)
+        layoutall.addWidget(self.dekripsi)
+        widget.setLayout(layoutall)
 
         # Set the central widget of the Window. Widget will expand
         # to take up all the space in the window by default.
@@ -98,19 +111,12 @@ class MainWindow(QMainWindow):
     def layout1(self):
         # Layout 1. Vignere Cipher
         layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(0, 23, 0, 0)
 
-        spasi = QCheckBox("Tambahkan spasi di cipherteks")
-
+        
         labelkey = QLabel("Kunci:")
         kunci = QLineEdit()
         
-
-        #Button
-        
-        
-
-        layout.addWidget(spasi)
         layout.addWidget(labelkey)
         layout.addWidget(kunci)
         layout.setAlignment(Qt.AlignTop)
@@ -122,19 +128,17 @@ class MainWindow(QMainWindow):
     def layout2(self):
         # Layout 2. Full Vignere Cipher
         layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-
-        spasi = QCheckBox("Tambahkan spasi di cipherteks")
+        layout.setContentsMargins(0, 23, 0, 0)
 
         labelkey = QLabel("Kunci:")
         kunci = QLineEdit()
 
         tabel = QPushButton("Edit Tabel")
 
-        layout.addWidget(spasi)
         layout.addWidget(labelkey)
         layout.addWidget(kunci)
         layout.addWidget(tabel)
+        layout.setAlignment(Qt.AlignTop)
         
 
         self.stack2.setLayout(layout)
