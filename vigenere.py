@@ -29,8 +29,12 @@ def vigenere(key, text, isencrypt, isauto):
         if counter > panjangkunci:
             if isauto:
                 # Gunakan plainteks sebagai kunci
-                i = counter - panjangkunci - 1
-                hasil += geser(char,plainteks[i], isencrypt)
+                if isencrypt:
+                    i = counter - panjangkunci - 1
+                    hasil += geser(char,plainteks[i], isencrypt)
+                else:
+                    i = counter - panjangkunci - 1
+                    hasil += geser(char,hasil[i], isencrypt)
                                  
             else:
                 # Ulangi kunci jika habis
@@ -54,7 +58,7 @@ def geser(char, key, enkripsi):
         ordhasil = ordhasil + ord(key) - idxA
     else:
         ordhasil = ordhasil - (ord(key) - idxA)
-    
+        
     ordhasil = (ordhasil%26) + idxA
     
     return chr(ordhasil)
