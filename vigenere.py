@@ -70,4 +70,3 @@ def geser(char, key, enkripsi, is256):
     
     return chr(ordhasil)
 
-

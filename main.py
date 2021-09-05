@@ -1,6 +1,9 @@
 import sys
+import random
+import os.path
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -15,11 +18,13 @@ from PyQt5.QtWidgets import (
     QWidget,
     QPlainTextEdit,
     QFileDialog,
-    QStackedWidget
+    QStackedWidget,
+    
 )
 
 from vigenere import *
 from playfair import *
+from fullvigenere import *
 
 
 class MainWindow(QMainWindow):
@@ -51,6 +56,7 @@ class MainWindow(QMainWindow):
         self.labelpath = QLabel("")
         self.bukafile.clicked.connect(self.open)
         self.bukafile2 = QPushButton("Simpan...")
+        self.bukafile2.clicked.connect(self.simpanhasil)
         
         self.label4 = QLabel()
         self.enkripsi = QPushButton("Enkripsi")
@@ -63,6 +69,24 @@ class MainWindow(QMainWindow):
 
         # Extra fields
         self.vigenere_kunci = QLineEdit()
+        self.shiftnum = QLineEdit()
+        self.onlyInt = QIntValidator()
+        self.shiftnum.setValidator(self.onlyInt)
+        self.tabel = QPlainTextEdit()
+        self.matriks = QPlainTextEdit()
+        self.full_kunci = QLineEdit()
+        self.relatifprima = QComboBox()
+        self.binaryfile = ''
+        self.relatifprima.addItems(["1","3","5","7","9","11","15","17","19","21","23","25"])
+
+        # Buttons
+        self.generate = QPushButton("Buat tabel acak")
+        self.generate.clicked.connect(self.shuffleAZ)
+        self.importabel = QPushButton("Impor tabel...")
+        self.importabel.clicked.connect(self.loadtabel)
+        self.eksportabel = QPushButton("Ekspor tabel...")
+        self.eksportabel.clicked.connect(self.savetabel)
+
         
         # Buat menu beda sesuai jenis cipher
         self.stack1 = QWidget()
@@ -73,6 +97,7 @@ class MainWindow(QMainWindow):
         self.stack6 = QWidget()
         self.layout1()
         self.layout2()
+        self.layout3()
         self.stack = QStackedWidget (self)
         self.stack.addWidget (self.stack1)
         self.stack.addWidget (self.stack2)
@@ -137,20 +162,47 @@ class MainWindow(QMainWindow):
     def layout2(self):
         # Layout 2. Full Vignere Cipher
         layout = QVBoxLayout()
-        layout.setContentsMargins(0, 23, 0, 0)
+        layout.setContentsMargins(0, 23, 0, 19)
 
         labelkey = QLabel("Kunci:")
-        kunci = QLineEdit()
+        
 
-        tabel = QPushButton("Edit Tabel")
+        tabel = QLabel("Tabel Huruf:")
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.importabel)
+        hbox.addWidget(self.eksportabel)
+        
 
         layout.addWidget(labelkey)
-        layout.addWidget(kunci)
+        layout.addWidget(self.full_kunci)
         layout.addWidget(tabel)
+        layout.addWidget(self.tabel)
+        layout.addLayout(hbox)
+        layout.addWidget(self.generate)
         layout.setAlignment(Qt.AlignTop)
         
 
         self.stack2.setLayout(layout)
+
+    def layout3(self):
+        # Layout 3. Affine Cipher
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 23, 0, 0)
+
+        labelkey = QLabel("Shift:")
+        
+
+        prima = QLabel("Angka relatif prima:")
+        
+
+        layout.addWidget(labelkey)
+        layout.addWidget(self.shiftnum)
+        layout.addWidget(prima)
+        layout.addWidget(self.relatifprima)
+        layout.setAlignment(Qt.AlignTop)
+        
+
+        self.stack3.setLayout(layout)
 
 
     def changemenus(self, s):
@@ -159,6 +211,8 @@ class MainWindow(QMainWindow):
         print("Current index:", index)
         if index == 1:
             self.stack.setCurrentIndex(1)
+        elif index == 5:
+            self.stack.setCurrentIndex(2)
         else:
             self.stack.setCurrentIndex(0)
 
@@ -166,11 +220,17 @@ class MainWindow(QMainWindow):
         index = self.jeniscipher.currentIndex()
         teksinput = self.inputfield.toPlainText()
         output = ''
-        
+        content = ''
+        isbinary = False
         
         if index == 0:
             tekskunci = self.vigenere_kunci.text()
             output = vigenere(tekskunci, teksinput, True, False, False)
+
+        elif index == 1:
+            tekskunci = self.full_kunci.text()
+            tabel = self.tabel.toPlainText()
+            output = fullvigenere(tekskunci, teksinput, tabel, True)
 
         elif index == 2:
             tekskunci = self.vigenere_kunci.text()
@@ -178,7 +238,20 @@ class MainWindow(QMainWindow):
 
         elif index == 3:
             tekskunci = self.vigenere_kunci.text()
-            output = vigenere(tekskunci, teksinput, True, False, True)
+            instring = ''
+            
+            if os.path.exists(teksinput):
+                isbinary = True
+                with open(teksinput, 'rb') as f:
+                    byte = f.read(1)
+                    while byte:
+                        instring += chr(ord(byte))
+                        byte = f.read(1)
+                    encrypted = vigenere(tekskunci, instring, True, False, True)
+                    self.binaryfile = encrypted
+            else:
+                output = vigenere(tekskunci, teksinput, True, False, True)
+            
 
         elif index == 4:
             tekskunci = self.vigenere_kunci.text()
@@ -187,6 +260,9 @@ class MainWindow(QMainWindow):
         # Tambah spasi jika opsi dipilih
         if self.spasi.isChecked():
             output = ' '.join(output[i:i+5] for i in range(0,len(output),5))
+            
+        if index == 3 and isbinary:
+            output = 'Berkas telah dienkripsi. Silakan unduh dengan tombol "Simpan..."'
 
         self.outputfield.setPlainText(output)
 
@@ -194,11 +270,17 @@ class MainWindow(QMainWindow):
         index = self.jeniscipher.currentIndex()
         teksinput = self.inputfield.toPlainText()
         output = ''
+        isbinary = False
         
         
         if index == 0:
             tekskunci = self.vigenere_kunci.text()
             output = vigenere(tekskunci, teksinput, False, False, False)
+
+        elif index == 1:
+            tekskunci = self.full_kunci.text()
+            tabel = self.tabel.toPlainText()
+            output = fullvigenere(tekskunci, teksinput, tabel, False)
 
         elif index == 2:
             tekskunci = self.vigenere_kunci.text()
@@ -206,11 +288,27 @@ class MainWindow(QMainWindow):
 
         elif index == 3:
             tekskunci = self.vigenere_kunci.text()
-            output = vigenere(tekskunci, teksinput, False, False, True)
+
+            instring = ''
+            
+            if os.path.exists(teksinput):
+                isbinary = True
+                with open(teksinput, 'rb') as f:
+                    byte = f.read(1)
+                    while byte:
+                        instring += chr(ord(byte))
+                        byte = f.read(1)
+                    encrypted = vigenere(tekskunci, instring, False, False, True)
+                    self.binaryfile = encrypted
+            else:
+                output = vigenere(tekskunci, teksinput, False, False, True)
             
         elif index == 4:
             tekskunci = self.vigenere_kunci.text()
             output = upper(playfair_decipher(teksinput, tekskunci))
+
+        if index == 3 and isbinary:
+            output = 'Berkas telah didekripsi. Silakan unduh dengan tombol "Simpan..."'
 
         self.outputfield.setPlainText(output)
 
@@ -222,19 +320,65 @@ class MainWindow(QMainWindow):
         else:
             fileName, _ = QFileDialog.getOpenFileName(self, 'File Input')
         content = ''
-        if fileName.endswith('.txt'):
-           # File txt
-           with open(fileName, 'r') as f:
-               content = f.read()
-               self.inputfield.setPlainText(content)
-        else:
-            # File biner
-            #with open(fileName, 'rb') as f:
-               #bytecontent = f.read()
-            self.inputfield.setPlainText(fileName)
+        if fileName:
+            if fileName.endswith('.txt'):
+               # File txt
+               with open(fileName, 'r') as f:
+                   content = f.read()
+                   self.inputfield.setPlainText(content)
+            else:
+                # File biner
+                #with open(fileName, 'rb') as f:
+                   #bytecontent = f.read()
+                self.inputfield.setPlainText(fileName)
 
-               
-            
+    def shuffleAZ(self):
+        # Buat tabel huruf random untuk cipher Full Vigenere
+        alfabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        shuffled = ''.join(random.sample(alfabet,len(alfabet)))
+        content = shuffled
+        for i in range(26):
+            shuffled = ''.join(random.sample(alfabet,len(alfabet)))
+            content += '\n'
+            content += shuffled
+        
+        self.tabel.setPlainText(content)
+
+    def loadtabel(self):
+        fileName, _ = QFileDialog.getOpenFileName(self, 'Load Tabel','.', "Text Files (*.txt)")
+        content = ''
+        # File txt
+        if fileName:
+            with open(fileName, 'r') as f:
+                content = f.read()
+                self.tabel.setPlainText(content)
+
+    def savetabel(self):
+        fileName, _ = QFileDialog.getSaveFileName(self, 'Save Tabel', 'tabel.txt')
+        if fileName:
+            tabel = self.tabel.toPlainText()
+            fname = open(fileName, 'w')
+            fname.write(tabel)
+            fname.close()
+
+    def simpanhasil(self):
+        index = self.jeniscipher.currentIndex()
+        if index == 3:
+            fileName, _ = QFileDialog.getSaveFileName(self, 'Save Output', 'output')
+            if(fileName):
+                output = self.binaryfile
+                fname = open(fileName, 'w', encoding="utf-8")
+                fname.write(output)
+                fname.close()
+        else:
+            fileName, _ = QFileDialog.getSaveFileName(self, 'Save Output', 'output.txt')
+            if(fileName):
+                output = self.outputfield.toPlainText()
+                fname = open(fileName, 'w')
+                fname.write(output)
+                fname.close()
+
+    
 
 
 app = QApplication(sys.argv)
