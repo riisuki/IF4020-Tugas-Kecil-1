@@ -11,8 +11,6 @@ def hill(teks, matriks, isencrypt):
     K = np.array(matriksarr)
     
     if not isencrypt:
-        # masih koma
-        #K = np.linalg.inv(K)
         KM = Matrix(K)
         KM = KM.inv_mod(26)
         K = np.array(KM.tolist())
@@ -43,10 +41,6 @@ def hill(teks, matriks, isencrypt):
     return cipher
     
     
-    
-    #A = np.array(matriksarr)
-    #print(np.linalg.inv(A))
-    
 
 def tekstomatriks(matriks):
     splitmatriks = matriks.splitlines()
@@ -74,6 +68,3 @@ def arrtoword(arr):
         word += chr(x+65)
 
     return word
-    
-
-print(hill("ZFCDFNPWOPRO", "17 17 5\n21 18 21\n2 2 19", False))
