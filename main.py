@@ -26,6 +26,7 @@ from vigenere import *
 from playfair import *
 from fullvigenere import *
 from hill import *
+from affine import *
 
 
 class MainWindow(QMainWindow):
@@ -269,7 +270,7 @@ class MainWindow(QMainWindow):
 
         elif index == 4:
             tekskunci = self.vigenere_kunci.text()
-            output = upper(playfair_cipher(teksinput, tekskunci))
+            output = playfair_cipher(teksinput, tekskunci).upper()
 
         elif index == 6:
             teksmatriks = self.matriks.toPlainText()
@@ -322,7 +323,7 @@ class MainWindow(QMainWindow):
             
         elif index == 4:
             tekskunci = self.vigenere_kunci.text()
-            output = upper(playfair_decipher(teksinput, tekskunci))
+            output = playfair_decipher(teksinput, tekskunci).upper()
             
         elif index == 6:
             teksmatriks = self.matriks.toPlainText()

@@ -60,17 +60,17 @@ def playfair_cipher(plaintext: str, key: str) -> str:
   playfair_square = __playfair_square(key)
   # siapkan plaintext
   # hapus huruf j dan whitespace
-  plaintext = re.sub(r'(?:[^a-z]|j)', '', ''.join(plaintext.lower().split()))
+  safe_plaintext = re.sub(r'(?:[^a-z]|j)', '', ''.join(plaintext.lower().split()))
   # buat bigram
   bigrams = []
-  n = len(plaintext)
+  n = len(safe_plaintext)
   i = 0
   while i < n:
-    firstPair = plaintext[i]
+    firstPair = safe_plaintext[i]
     if i+1 == n:
       secondPair = 'x' # apabila huruf terakhir sendiri, tambah x
     else:
-      secondPair = plaintext[i+1]
+      secondPair = safe_plaintext[i+1]
     if firstPair == secondPair: # tidak boleh ada pasangan huruf yang sama
       if firstPair != 'x':
         secondPair = 'x'
@@ -96,8 +96,9 @@ def playfair_decipher(ciphertext: str, key: str) -> str:
   `ciphertext`: ciphertext yang akan didecipher  
   `key`: kunci yang digunakan
   """
+  safe_ciphertext = re.sub(r'[^a-z]', '', ''.join(ciphertext.lower().split()))
   playfair_square = __playfair_square(key)
-  bigrams = [ciphertext[i:i+2] for i in range(0, len(ciphertext), 2)]
+  bigrams = [safe_ciphertext[i:i+2] for i in range(0, len(safe_ciphertext), 2)]
   plainText = ''
   for bigram in bigrams:
     plainText += __playfair_shift(bigram, playfair_square, False)
