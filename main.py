@@ -271,6 +271,11 @@ class MainWindow(QMainWindow):
         elif index == 4:
             tekskunci = self.vigenere_kunci.text()
             output = playfair_cipher(teksinput, tekskunci).upper()
+        
+        elif index == 5:
+            shift = int(self.shiftnum.text())
+            relprime = int(self.relatifprima.currentText())
+            output = affine_cipher(teksinput, relprime, shift).upper()
 
         elif index == 6:
             teksmatriks = self.matriks.toPlainText()
@@ -324,6 +329,11 @@ class MainWindow(QMainWindow):
         elif index == 4:
             tekskunci = self.vigenere_kunci.text()
             output = playfair_decipher(teksinput, tekskunci).upper()
+        
+        elif index == 5:
+            shift = int(self.shiftnum.text())
+            relprime = int(self.relatifprima.currentText())
+            output = affine_decipher(teksinput, relprime, shift).upper()
             
         elif index == 6:
             teksmatriks = self.matriks.toPlainText()
