@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import (
 from vigenere import *
 from playfair import *
 from fullvigenere import *
+from hill import *
 
 
 class MainWindow(QMainWindow):
@@ -93,18 +94,15 @@ class MainWindow(QMainWindow):
         self.stack2 = QWidget()
         self.stack3 = QWidget()
         self.stack4 = QWidget()
-        self.stack5 = QWidget()
-        self.stack6 = QWidget()
         self.layout1()
         self.layout2()
         self.layout3()
+        self.layout4()
         self.stack = QStackedWidget (self)
         self.stack.addWidget (self.stack1)
         self.stack.addWidget (self.stack2)
         self.stack.addWidget (self.stack3)
         self.stack.addWidget (self.stack4)
-        self.stack.addWidget (self.stack5)
-        self.stack.addWidget (self.stack6)
 
         
 
@@ -204,6 +202,20 @@ class MainWindow(QMainWindow):
 
         self.stack3.setLayout(layout)
 
+    def layout4(self):
+        # Layout 4. Hill Cipher
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 23, 0, 19)
+
+        labelkey = QLabel("Matriks Kunci:")
+
+        layout.addWidget(labelkey)
+        layout.addWidget(self.matriks)
+        layout.setAlignment(Qt.AlignTop)
+        
+
+        self.stack4.setLayout(layout)
+
 
     def changemenus(self, s):
         # Untuk ganti menu saat mengubah jenis cipher
@@ -213,6 +225,8 @@ class MainWindow(QMainWindow):
             self.stack.setCurrentIndex(1)
         elif index == 5:
             self.stack.setCurrentIndex(2)
+        elif index == 6:
+            self.stack.setCurrentIndex(3)
         else:
             self.stack.setCurrentIndex(0)
 
@@ -256,6 +270,10 @@ class MainWindow(QMainWindow):
         elif index == 4:
             tekskunci = self.vigenere_kunci.text()
             output = upper(playfair_cipher(teksinput, tekskunci))
+
+        elif index == 6:
+            teksmatriks = self.matriks.toPlainText()
+            output = hill(teksinput, teksmatriks, True)
             
         # Tambah spasi jika opsi dipilih
         if self.spasi.isChecked():
@@ -305,6 +323,10 @@ class MainWindow(QMainWindow):
         elif index == 4:
             tekskunci = self.vigenere_kunci.text()
             output = upper(playfair_decipher(teksinput, tekskunci))
+            
+        elif index == 6:
+            teksmatriks = self.matriks.toPlainText()
+            output = hill(teksinput, teksmatriks, False)
 
         if index == 3 and isbinary:
             output = 'Berkas telah didekripsi. Silakan unduh dengan tombol "Simpan..."'
