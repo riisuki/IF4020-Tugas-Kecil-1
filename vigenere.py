@@ -54,11 +54,8 @@ def geser(char, key, enkripsi):
         ordhasil = ordhasil + ord(key) - idxA
     else:
         ordhasil = ordhasil - (ord(key) - idxA)
-    else:
-        ordhasil = ordhasil % 26
-
     
-    ordhasil = ordhasil + idxA
+    ordhasil = (ordhasil%26) + idxA
     
     return chr(ordhasil)
 
