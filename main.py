@@ -221,7 +221,7 @@ class MainWindow(QMainWindow):
     def changemenus(self, s):
         # Untuk ganti menu saat mengubah jenis cipher
         index = self.jeniscipher.currentIndex()
-        print("Current index:", index)
+        #print("Current index:", index)
         if index == 1:
             self.stack.setCurrentIndex(1)
         elif index == 5:
@@ -230,6 +230,12 @@ class MainWindow(QMainWindow):
             self.stack.setCurrentIndex(3)
         else:
             self.stack.setCurrentIndex(0)
+
+        if index == 3:
+            self.inputfield.setDisabled(True)
+        else:
+            self.inputfield.setDisabled(False)
+
 
     def fungsi_enkripsi(self):
         index = self.jeniscipher.currentIndex()
@@ -253,17 +259,24 @@ class MainWindow(QMainWindow):
 
         elif index == 3:
             tekskunci = self.vigenere_kunci.text()
-            instring = ''
+            instring = []
             
             if os.path.exists(teksinput):
                 isbinary = True
                 with open(teksinput, 'rb') as f:
+                    #byte = f.read(1)
+                    #while byte:
+                        #instring += chr(ord(byte))
+                        #byte = f.read(1)
+                    #encrypted = vigenere(tekskunci, instring, True, False, True)
+                    #self.binaryfile = encrypted
                     byte = f.read(1)
                     while byte:
-                        instring += chr(ord(byte))
+                        instring.append(int.from_bytes(byte, "big"))   
                         byte = f.read(1)
-                    encrypted = vigenere(tekskunci, instring, True, False, True)
+                    encrypted = bytearray(vigenerebin(tekskunci, instring, True))
                     self.binaryfile = encrypted
+
             else:
                 output = vigenere(tekskunci, teksinput, True, False, True)
             
@@ -312,17 +325,24 @@ class MainWindow(QMainWindow):
 
         elif index == 3:
             tekskunci = self.vigenere_kunci.text()
-            instring = ''
+            instring = []
             
             if os.path.exists(teksinput):
-                isbinary = True
                 with open(teksinput, 'rb') as f:
+                    isbinary = True
+                    #byte = f.read(1)
+                    #while byte:
+                        #instring += chr(ord(byte))
+                        #byte = f.read(1)
+                    #encrypted = vigenere(tekskunci, instring, True, False, True)
+                    #self.binaryfile = encrypted
                     byte = f.read(1)
                     while byte:
-                        instring += chr(ord(byte))
+                        instring.append(int.from_bytes(byte, "big"))   
                         byte = f.read(1)
-                    encrypted = vigenere(tekskunci, instring, False, False, True)
+                    encrypted = bytearray(vigenerebin(tekskunci, instring, False))
                     self.binaryfile = encrypted
+
             else:
                 output = vigenere(tekskunci, teksinput, False, False, True)
             
@@ -399,14 +419,7 @@ class MainWindow(QMainWindow):
             fileName, _ = QFileDialog.getSaveFileName(self, 'Save Output', 'output')
             if(fileName):
                 output = self.binaryfile
-                fname = open(fileName, 'w', encoding="ISO-8859-1")
-                fname.write(output)
-                fname.close()
-        elif index == 3:
-            fileName, _ = QFileDialog.getSaveFileName(self, 'Save Output', 'output')
-            if(fileName):
-                output = self.outputfield.toPlainText()
-                fname = open(fileName, 'w', encoding="ISO-8859-1")
+                fname = open(fileName, 'wb')
                 fname.write(output)
                 fname.close()
         else:
