@@ -323,6 +323,7 @@ class MainWindow(QMainWindow):
             
             if os.path.exists(teksinput):
                 with open(teksinput, 'rb') as f:
+                    isbinary = True
                     #byte = f.read(1)
                     #while byte:
                         #instring += chr(ord(byte))

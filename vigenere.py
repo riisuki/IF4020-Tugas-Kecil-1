@@ -71,6 +71,9 @@ def geser(char, key, enkripsi, is256):
     return chr(ordhasil)
 
 def vigenerebin(key, plain, isencrypt):
+    if key == '':
+        return ''
+
     counter = 1
     result = []
     keynum = []
