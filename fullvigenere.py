@@ -9,6 +9,9 @@ def fullvigenere(key, text, tabel, isencrypt):
     #             isi tabel dianggap sudah benar dan sesuai format
     # isencrypt : true jika mengenkripsi, false jika dekripsi
 
+    if tabel=='':
+        return ''
+
     # 1. Ambil hanya karakter alfabet dari input
     regex = re.compile('[^a-zA-Z]')
     plainteks = text

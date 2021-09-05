@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
         
         self.label1 = QLabel("Jenis Cipher:")
         self.jeniscipher = QComboBox()
-        self.jeniscipher.addItems(["Vigénere", "Full Vigénere", "Auto-key Vigénere", "Extended Vigénere", "Playfair", "Affine", "Hill", "Enigma"])
+        self.jeniscipher.addItems(["Vigénere", "Full Vigénere", "Auto-key Vigénere", "Extended Vigénere", "Playfair", "Affine", "Hill"])
 
 
         self.spasi = QCheckBox("Tambahkan spasi di cipherteks")
