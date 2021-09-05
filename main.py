@@ -19,6 +19,7 @@ from PyQt5.QtWidgets import (
 )
 
 from vigenere import *
+from playfair import *
 
 
 class MainWindow(QMainWindow):
@@ -156,10 +157,10 @@ class MainWindow(QMainWindow):
         # Untuk ganti menu saat mengubah jenis cipher
         index = self.jeniscipher.currentIndex()
         print("Current index:", index)
-        if index == 0 or index == 2 or index == 3:
-            self.stack.setCurrentIndex(0)
-        else:
+        if index == 1:
             self.stack.setCurrentIndex(1)
+        else:
+            self.stack.setCurrentIndex(0)
 
     def fungsi_enkripsi(self):
         index = self.jeniscipher.currentIndex()
@@ -179,6 +180,10 @@ class MainWindow(QMainWindow):
             tekskunci = self.vigenere_kunci.text()
             output = vigenere(tekskunci, teksinput, True, False, True)
 
+        elif index == 4:
+            tekskunci = self.vigenere_kunci.text()
+            output = upper(playfair_cipher(teksinput, tekskunci))
+            
         # Tambah spasi jika opsi dipilih
         if self.spasi.isChecked():
             output = ' '.join(output[i:i+5] for i in range(0,len(output),5))
@@ -202,6 +207,10 @@ class MainWindow(QMainWindow):
         elif index == 3:
             tekskunci = self.vigenere_kunci.text()
             output = vigenere(tekskunci, teksinput, False, False, True)
+            
+        elif index == 4:
+            tekskunci = self.vigenere_kunci.text()
+            output = upper(playfair_decipher(teksinput, tekskunci))
 
         self.outputfield.setPlainText(output)
 
