@@ -288,7 +288,6 @@ class MainWindow(QMainWindow):
 
         elif index == 3:
             tekskunci = self.vigenere_kunci.text()
-
             instring = ''
             
             if os.path.exists(teksinput):
@@ -323,7 +322,7 @@ class MainWindow(QMainWindow):
         if fileName:
             if fileName.endswith('.txt'):
                # File txt
-               with open(fileName, 'r') as f:
+               with open(fileName, 'r', encoding='ISO-8859-1') as f:
                    content = f.read()
                    self.inputfield.setPlainText(content)
             else:
@@ -363,11 +362,18 @@ class MainWindow(QMainWindow):
 
     def simpanhasil(self):
         index = self.jeniscipher.currentIndex()
-        if index == 3:
+        if index == 3 and os.path.exists(self.inputfield.toPlainText()):
             fileName, _ = QFileDialog.getSaveFileName(self, 'Save Output', 'output')
             if(fileName):
                 output = self.binaryfile
-                fname = open(fileName, 'w', encoding="utf-8")
+                fname = open(fileName, 'w', encoding="ISO-8859-1")
+                fname.write(output)
+                fname.close()
+        elif index == 3:
+            fileName, _ = QFileDialog.getSaveFileName(self, 'Save Output', 'output')
+            if(fileName):
+                output = self.outputfield.toPlainText()
+                fname = open(fileName, 'w', encoding="ISO-8859-1")
                 fname.write(output)
                 fname.close()
         else:
