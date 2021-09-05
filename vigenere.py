@@ -70,3 +70,22 @@ def geser(char, key, enkripsi, is256):
     
     return chr(ordhasil)
 
+def vigenerebin(key, plain, isencrypt):
+    counter = 1
+    result = []
+    keynum = []
+    
+    for x in key:
+        keynum.append(ord(x))
+
+    keylen = len(keynum)
+
+
+    for num in plain:
+        if isencrypt:
+            result.append((num + keynum[counter%keylen-1]) % 256)
+        else:
+            result.append((num - keynum[counter%keylen-1]) % 256)
+        counter += 1
+
+    return result
