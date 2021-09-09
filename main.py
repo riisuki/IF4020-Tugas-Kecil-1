@@ -246,7 +246,7 @@ class MainWindow(QMainWindow):
         
         if index == 0:
             tekskunci = self.vigenere_kunci.text()
-            output = vigenere(tekskunci, teksinput, True, False, False)
+            output = vigenere(tekskunci, teksinput, True, False)
 
         elif index == 1:
             tekskunci = self.full_kunci.text()
@@ -255,7 +255,7 @@ class MainWindow(QMainWindow):
 
         elif index == 2:
             tekskunci = self.vigenere_kunci.text()
-            output = vigenere(tekskunci, teksinput, True, True, False)
+            output = vigenere(tekskunci, teksinput, True, True)
 
         elif index == 3:
             tekskunci = self.vigenere_kunci.text()
@@ -278,7 +278,7 @@ class MainWindow(QMainWindow):
                     self.binaryfile = encrypted
 
             else:
-                output = vigenere(tekskunci, teksinput, True, False, True)
+                output = vigenere(tekskunci, teksinput, True, False)
             
 
         elif index == 4:
@@ -312,7 +312,7 @@ class MainWindow(QMainWindow):
         
         if index == 0:
             tekskunci = self.vigenere_kunci.text()
-            output = vigenere(tekskunci, teksinput, False, False, False)
+            output = vigenere(tekskunci, teksinput, False, False)
 
         elif index == 1:
             tekskunci = self.full_kunci.text()
@@ -321,7 +321,7 @@ class MainWindow(QMainWindow):
 
         elif index == 2:
             tekskunci = self.vigenere_kunci.text()
-            output = vigenere(tekskunci, teksinput, False, True, False)
+            output = vigenere(tekskunci, teksinput, False, True)
 
         elif index == 3:
             tekskunci = self.vigenere_kunci.text()
@@ -344,7 +344,7 @@ class MainWindow(QMainWindow):
                     self.binaryfile = encrypted
 
             else:
-                output = vigenere(tekskunci, teksinput, False, False, True)
+                output = vigenere(tekskunci, teksinput, False, False)
             
         elif index == 4:
             tekskunci = self.vigenere_kunci.text()
